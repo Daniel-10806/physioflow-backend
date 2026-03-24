@@ -1,6 +1,6 @@
 package com.physioflow.application.service;
 
-import com.physioflow.domain.model.entity.User;
+import com.physioflow.infrastructure.persistence.entity.UserJpaEntity;
 import com.physioflow.infrastructure.persistence.repository.UserJpaRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,17 +15,17 @@ public class UserService {
         this.repo = repo;
     }
 
-    public List<User> getAll() {
+    public List<UserJpaEntity> getAll() {
         return repo.findAll();
     }
 
-    public User create(User u) {
+    public UserJpaEntity create(UserJpaEntity u) {
         return repo.save(u);
     }
 
-    public User update(Long id, User data) {
+    public UserJpaEntity update(Long id, UserJpaEntity data) {
 
-        User u = repo.findById(id).orElseThrow();
+        UserJpaEntity u = repo.findById(id).orElseThrow();
 
         u.setActive(data.isActive());
 
@@ -33,9 +33,6 @@ public class UserService {
     }
 
     public void delete(Long id) {
-
         repo.deleteById(id);
-
     }
-
 }

@@ -1,7 +1,7 @@
 package com.physioflow.infrastructure.persistence.repository;
 
-import com.physioflow.domain.model.entity.User;
+import com.physioflow.infrastructure.persistence.entity.UserJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserJpaRepository extends JpaRepository<User, Long> {
+public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
 }
