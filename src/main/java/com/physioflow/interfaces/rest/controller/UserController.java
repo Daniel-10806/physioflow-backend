@@ -1,7 +1,7 @@
 package com.physioflow.interfaces.rest.controller;
 
 import com.physioflow.application.service.UserService;
-import com.physioflow.domain.model.entity.User;
+import com.physioflow.infrastructure.persistence.entity.UserJpaEntity;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -19,27 +19,25 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getAll() {
+    public List<UserJpaEntity> getAll() {
         return service.getAll();
     }
 
     @PostMapping
-    public User create(@RequestBody User u) {
+    public UserJpaEntity create(@RequestBody UserJpaEntity u) {
         return service.create(u);
     }
 
     @PutMapping("/{id}")
-    public User update(
+    public UserJpaEntity update(
             @PathVariable Long id,
-            @RequestBody User u) {
+            @RequestBody UserJpaEntity u) {
 
         return service.update(id, u);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-
         service.delete(id);
-
     }
 }
