@@ -166,27 +166,26 @@ public class SessionController {
                         record.setPainLevel(5);
                         record.setMobilityLevel(5);
                         record.setStrengthLevel(5);
+
                 }
 
                 sessionRecordRepository.save(record);
 
-                // =============================
-                // NOTIFICACIÓN
-                // =============================
+                try {
 
-                notificationService.send(
+                        notificationService.send(
+                                        NotificationType.SESSION_CREATED,
+                                        patient.getEmail(),
+                                        patient.getFullName(),
+                                        request.sessionDate().toString(),
+                                        request.sessionTime().toString(),
+                                        request.type().toString());
 
-                                NotificationType.SESSION_CREATED,
+                } catch (Exception e) {
 
-                                patient.getEmail(),
+                        System.out.println("Error enviando notificación: " + e.getMessage());
 
-                                patient.getFullName(),
-
-                                request.sessionDate().toString(),
-
-                                request.sessionTime().toString(),
-
-                                request.type().toString());
+                }
 
                 return ResponseEntity.ok().build();
         }
