@@ -24,6 +24,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+
+        String path = request.getServletPath();
+
+        return path.startsWith("/auth") ||
+                path.startsWith("/public") ||
+                path.startsWith("/health") ||
+                path.startsWith("/v3/api-docs") ||
+                path.startsWith("/swagger") ||
+                path.startsWith("/swagger-ui") ||
+                path.equals("/");
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain)
@@ -31,25 +45,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String header = request.getHeader("Authorization");
 
-        if (header != null && header.startsWith("Bearer ")) {
+        if (header == null || !header.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-            String token = header.substring(7);
+        String token = header.substring(7);
 
-            try {
+        try {
 
-                UUID therapistId = jwtService.extractTherapistIdFromClaim(token);
+            UUID therapistId = jwtService.extractTherapistIdFromClaim(token);
 
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        therapistId,
-                        null,
-                        List.of(new SimpleGrantedAuthority("ROLE_THERAPIST")));
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    therapistId,
+                    null,
+                    List.of(new SimpleGrantedAuthority("ROLE_THERAPIST")));
 
-                SecurityContextHolder.getContext()
-                        .setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            } catch (Exception e) {
-                SecurityContextHolder.clearContext();
-            }
+        } catch (Exception e) {
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);
