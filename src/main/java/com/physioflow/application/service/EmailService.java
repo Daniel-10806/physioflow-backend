@@ -13,27 +13,20 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
-    public void sendSessionConfirmation(
-            String to,
-            String patientName,
-            String date,
-            String time,
-            String type) {
+    public void sendEmail(String to, String subject, String body) {
 
         SimpleMailMessage message = new SimpleMailMessage();
 
         message.setTo(to);
-        message.setSubject("Confirmación de sesión de fisioterapia");
+        message.setSubject(subject);
+        message.setText(body);
 
-        message.setText(
-                "Hola " + patientName + ",\n\n" +
-                        "Tu sesión ha sido programada.\n\n" +
-                        "Fecha: " + date + "\n" +
-                        "Hora: " + time + "\n" +
-                        "Tipo: " + type + "\n\n" +
-                        "Te esperamos.\n\n" +
-                        "PhysioFlow");
-
-        mailSender.send(message);
+        try {
+            mailSender.send(message);
+            System.out.println("✅ Correo enviado a: " + to);
+        } catch (Exception e) {
+            System.out.println("❌ Error enviando correo: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

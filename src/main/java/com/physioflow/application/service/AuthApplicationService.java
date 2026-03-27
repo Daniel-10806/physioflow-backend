@@ -4,6 +4,7 @@ import com.physioflow.application.dto.request.LoginRequest;
 import com.physioflow.application.dto.request.RegisterRequest;
 import com.physioflow.application.dto.response.AuthResponse;
 import com.physioflow.domain.model.entity.Therapist;
+import com.physioflow.domain.model.enumtype.NotificationType;
 import com.physioflow.domain.model.enumtype.Role;
 import com.physioflow.domain.model.exception.DomainException;
 import com.physioflow.domain.repository.TherapistRepository;
@@ -21,15 +22,18 @@ public class AuthApplicationService {
     private final TherapistRepository repository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final NotificationService notificationService;
 
     public AuthApplicationService(
             TherapistRepository repository,
             BCryptPasswordEncoder passwordEncoder,
-            JwtService jwtService) {
+            JwtService jwtService,
+            NotificationService notificationService) {
 
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.notificationService = notificationService;
     }
 
     public AuthResponse register(RegisterRequest request) {
@@ -47,6 +51,14 @@ public class AuthApplicationService {
                 request.getGender());
 
         repository.save(therapist);
+
+        notificationService.send(
+                NotificationType.SESSION_CREATED,
+                therapist.getEmail(),
+                therapist.getFullName(),
+                "Hoy",
+                "Ahora",
+                "Registro exitoso");
 
         String token = jwtService.generateToken(
                 therapist.getId(),

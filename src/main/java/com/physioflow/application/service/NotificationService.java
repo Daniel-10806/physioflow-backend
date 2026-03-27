@@ -1,7 +1,6 @@
 package com.physioflow.application.service;
 
 import com.physioflow.domain.model.enumtype.NotificationType;
-
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,17 +18,11 @@ public class NotificationService {
     }
 
     public void send(
-
             NotificationType type,
-
             String email,
-
             String patient,
-
             String date,
-
             String time,
-
             String extra) {
 
         String subject = builder.buildSubject(type);
@@ -41,11 +34,9 @@ public class NotificationService {
                 time,
                 extra);
 
-        emailService.sendSessionConfirmation(
+        emailService.sendEmail(
                 email,
-                patient,
-                date,
-                time,
-                extra);
+                subject,
+                body);
     }
 }
