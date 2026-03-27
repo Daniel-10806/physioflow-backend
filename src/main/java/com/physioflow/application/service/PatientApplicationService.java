@@ -19,7 +19,6 @@ import com.physioflow.domain.model.valueobject.RangeOfMotion;
 import com.physioflow.domain.repository.PatientRepository;
 import com.physioflow.domain.repository.TreatmentPlanRepository;
 import com.physioflow.domain.service.TreatmentPlanDomainService;
-import com.physioflow.infrastructure.kafka.producer.TreatmentPlanEventProducer;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -33,20 +32,17 @@ public class PatientApplicationService
         private final PatientRepository patientRepository;
         private final TreatmentPlanRepository treatmentPlanRepository;
         private final TreatmentPlanDomainService treatmentPlanDomainService;
-        private final ObjectProvider<TreatmentPlanEventProducer> eventProducerProvider;
         private final EvaluationRepository evaluationRepository;
 
         public PatientApplicationService(
                         PatientRepository patientRepository,
                         TreatmentPlanRepository treatmentPlanRepository,
                         TreatmentPlanDomainService treatmentPlanDomainService,
-                        ObjectProvider<TreatmentPlanEventProducer> eventProducerProvider,
                         EvaluationRepository evaluationRepository) {
 
                 this.patientRepository = patientRepository;
                 this.treatmentPlanRepository = treatmentPlanRepository;
                 this.treatmentPlanDomainService = treatmentPlanDomainService;
-                this.eventProducerProvider = eventProducerProvider;
                 this.evaluationRepository = evaluationRepository;
         }
 
@@ -103,10 +99,6 @@ public class PatientApplicationService
                                 evaluation);
 
                 treatmentPlanRepository.save(plan);
-
-                eventProducerProvider.ifAvailable(producer -> producer.publishTreatmentPlanGenerated(
-                                patient.getId(),
-                                plan.getId()));
 
                 return plan.getId();
         }
