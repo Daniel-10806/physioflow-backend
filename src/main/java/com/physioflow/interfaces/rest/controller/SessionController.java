@@ -175,7 +175,7 @@ public class SessionController {
 
                         notificationService.send(
                                         NotificationType.SESSION_CREATED,
-                                        patient.getEmail(),
+                                        request.patientEmail(),
                                         patient.getFullName(),
                                         request.sessionDate().toString(),
                                         request.sessionTime().toString(),
