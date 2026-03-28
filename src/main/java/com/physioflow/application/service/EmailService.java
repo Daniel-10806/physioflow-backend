@@ -36,6 +36,8 @@ public class EmailService {
 
         try {
 
+            System.out.println("Enviando correo a: " + to);
+
             MimeMessage message = mailSender.createMimeMessage();
 
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -90,6 +92,5 @@ public class EmailService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("Enviando correo a: " + to);
     }
 }
