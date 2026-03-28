@@ -1,6 +1,8 @@
 package com.physioflow.application.service;
 
 import com.physioflow.domain.model.enumtype.NotificationType;
+
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,9 +36,19 @@ public class NotificationService {
                 time,
                 extra);
 
-        emailService.sendEmail(
-                email,
-                subject,
-                body);
+        switch (type) {
+
+            case SESSION_CREATED -> emailService.sendSessionConfirmation(
+                    email,
+                    patient,
+                    date,
+                    time,
+                    extra);
+
+            default -> emailService.sendEmail(
+                    email,
+                    subject,
+                    body);
+        }
     }
 }
